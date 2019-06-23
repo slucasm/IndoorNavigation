@@ -22,7 +22,7 @@ def init_D435():
     return pipeline_D435
 
 class dataTransformed:
-    def _init(self, H_aeroRef_aeroBody, TaitBryan_rad):
+    def __init__(self, H_aeroRef_aeroBody, TaitBryan_rad):
         self.H_aeroRef_aeroBody = H_aeroRef_aeroBody
         self.TaitBryan_rad = TaitBryan_rad
 

@@ -1,12 +1,10 @@
 from RealsenseFunctions import *
 from ConnectionDroneFunctions import *
+import time
 
 pipeline_T265 = init_T265()
 
-vehicle = None
-
-while None != vehicle:
-    vehicle = droneConnection()
+vehicle = droneConnection()
 
 print("Connected to Dron")
 
@@ -22,9 +20,9 @@ try:
 
         data_transformed = transform_data(pose_data)
 
-        H_aeroRef_aeroBody = dataTransformed.H_aeroRef_aeroBody
+        H_aeroRef_aeroBody = data_transformed.H_aeroRef_aeroBody
 
-        TaitBryan_rad = dataTransformed.TaitBryan_rad
+        TaitBryan_rad = data_transformed.TaitBryan_rad
 
         x = H_aeroRef_aeroBody[0][3]
         y = H_aeroRef_aeroBody[1][3]
@@ -36,14 +34,15 @@ try:
 
         current_time = int(round(time.time() * 1000000))
 
-        message_vision_position_estimate(vehicle, time, x, y, x, roll, pitch, yaw)
+        message_vision_position_estimate(vehicle, current_time, x, y, x, roll, pitch, yaw)
 
 
 
 
 finally:
+
     pipeline_T265.stop()
-    vehicle.stop()
+    vehicle.close()
 
 
 

@@ -1,22 +1,19 @@
 from pymavlink import *
-from dronekit import *
-
+from dronekit import connect
 
 
 
 def droneConnection():
     connection_string = '/dev/serial0'
-    connection_baudrate = 921600
+    connection_baudrate = 57600
 
     try:
-        vehicle = connect(connection_string, wait_ready = True, baud = connection_baudrate)
+        vehicle = connect(connection_string, wait_ready=True, baud=connection_baudrate)
+        return vehicle
     except:
         print("Error connecting Drone")
 
-    if vehicle:
-        return vehicle
-    else:
-        return False
+
 
 def message_vision_position_estimate(vehicle, time, x, y, z, roll, pitch, yaw):
     message = vehicle.message_factory.vision_position_estimate_encode(time, x, y, z, roll, pitch, yaw)
