@@ -9,7 +9,7 @@ def init_T265():
     pipeline_T265 = rs.pipeline()
     config_T265 = rs.config()
     config_T265.enable_device('905312110153')
-    config_T265.enable_stream(rs.stream.pose, 848, 800, rs.format.six_dof, 200)
+    config_T265.enable_stream(rs.stream.pose)
     pipeline_T265.start(config_T265)
     return pipeline_T265
 
@@ -29,9 +29,13 @@ class dataTransformed:
 def transform_data(pose_data):
     H_T265Ref_T265body = tf.quaternion_matrix([pose_data.rotation.w, pose_data.rotation.x, pose_data.rotation.y, pose_data.rotation.z])  # in transformations, Quaternions w+ix+jy+kz are represented as [w, x, y, z]!
 
+    H_T265Ref_T265body[0][3] = pose_data.translation.x
+    H_T265Ref_T265body[1][3] = pose_data.translation.y
+    H_T265Ref_T265body[2][3] = pose_data.translation.z
+
     # transform to aeronautic coordinates (body AND reference frame!)
     H_aeroRef_aeroBody = H_aeroRef_T265Ref.dot(H_T265Ref_T265body.dot(H_T265body_aeroBody))
 
-    TaitBryan_rad = np.array(tf.euler_from_matrix(H_aeroRef_aeroBody, 'rxyz'))
+    TaitBryan_rad = np.array(tf.euler_from_matrix(H_aeroRef_aeroBody, 'sxyz'))
 
-    return dataTransformed(H_T265body_aeroBody, TaitBryan_rad)
+    return dataTransformed(H_aeroRef_aeroBody, TaitBryan_rad)

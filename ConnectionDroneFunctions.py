@@ -5,10 +5,11 @@ from dronekit import connect
 
 def droneConnection():
     connection_string = '/dev/serial0'
-    connection_baudrate = 57600
+    connection_baudrate = 921600
 
     try:
         vehicle = connect(connection_string, wait_ready=True, baud=connection_baudrate)
+        print("Connected to Drone")
         return vehicle
     except:
         print("Error connecting Drone")

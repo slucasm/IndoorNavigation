@@ -6,13 +6,10 @@ pipeline_T265 = init_T265()
 
 vehicle = droneConnection()
 
-print("Connected to Dron")
-
 try:
 
-    frames_T265 = pipeline_T265.wait_for_frames()
-
     while True:
+        frames_T265 = pipeline_T265.wait_for_frames()
 
         pose_frame = frames_T265.get_pose_frame()
 
@@ -35,9 +32,6 @@ try:
         current_time = int(round(time.time() * 1000000))
 
         message_vision_position_estimate(vehicle, current_time, x, y, x, roll, pitch, yaw)
-
-
-
 
 finally:
 
