@@ -39,3 +39,29 @@ def transform_data(pose_data):
     TaitBryan_rad = np.array(tf.euler_from_matrix(H_aeroRef_aeroBody, 'sxyz'))
 
     return dataTransformed(H_aeroRef_aeroBody, TaitBryan_rad)
+
+def get_distance_pixels_inside_region(frames_D435, minimum_distance, x_up, y_up, x_down, y_down):
+    depth_frames = frames_D435.get_depth_frame()
+    list_distances = []
+    j = y_up
+    while (j < y_down):
+        i = x_up
+        while (i < x_down):
+            pixel_distance = depth_frames.get_distance(i, j)
+            if (pixel_distance < minimum_distance and pixel_distance != 0):
+                list_distances.append(pixel_distance)
+            i = i + 1
+        j = j + 1
+
+    hist, bins = np.histogram(list_distances, bins='auto')
+
+    index = np.argmax(hist)
+
+    if len(list_distances) > 4000:
+        return bins[index]*100
+    else:
+        return 1000
+
+    mean_distance = bins[index]
+
+    return mean_distance

@@ -1,10 +1,10 @@
-from pymavlink import *
+from pymavlink import mavutil
 from dronekit import connect
 
 
 
 def droneConnection():
-    connection_string = '/dev/serial0'
+    connection_string = "COM7"
     connection_baudrate = 921600
 
     try:
@@ -21,4 +21,12 @@ def message_vision_position_estimate(vehicle, time, x, y, z, roll, pitch, yaw):
     vehicle.send_mavlink(message)
     vehicle.flush()
 
+def message_distance_sensor(vehicle, time, min_distance, max_distance, current_distance):
+
+    type = 4 #for uknown distance sensor
+    id = 0 #no idea what  means
+
+    message = vehicle.message_factory.distance_sensor_encode(0, min_distance, max_distance, current_distance, 4, 0, mavutil.mavlink.MAV_SENSOR_ROTATION_NONE, covariance=0)
+    vehicle.send_mavlink(message)
+    vehicle.flush()
 
