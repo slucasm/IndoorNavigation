@@ -3,6 +3,7 @@ import numpy as np
 import datetime
 import openpyxl as xlsx
 
+
 def init_T265():
     pipeline_T265 = rs.pipeline()
     config_T265 = rs.config()
@@ -12,7 +13,10 @@ def init_T265():
     config_T265.enable_stream(rs.stream.fisheye, 2)
     config_T265.enable_record_to_file("{}_T265.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S")))
     pipeline_T265.start(config_T265)
+    print("LOG: T265 - Connected with camera")
+    print ("LOG: T265 - Start recording")
     return pipeline_T265
+
 
 def init_D435():
     pipeline_D435 = rs.pipeline()
@@ -22,7 +26,10 @@ def init_D435():
     config_D435.enable_stream(rs.stream.color, 1280, 720, rs.format.rgb8, 15)
     config_D435.enable_record_to_file("{}_D435.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S")))
     pipeline_D435.start(config_D435)
+    print("LOG: D435 - Connected with camera")
+    print("LOG: D435 - Start recording")
     return pipeline_D435
+
 
 def get_distance_pixels_inside_region(frames_D435, minimum_distance, x_up, y_up, x_down, y_down):
     depth_frames = frames_D435.get_depth_frame()
@@ -57,8 +64,9 @@ def save_to_excel(xdata,ydata,zdata):
     wb = None
     try:
         wb = xlsx.load_workbook(wb_name)
+        print("LOG: Created new worksheet in {}" .format(wb_name))
     except:
-        print("Create new .xlsx file")
+        print("LOG: Create new .xlsx file")
 
     if wb is None:
         wb = xlsx.Workbook()
@@ -73,3 +81,4 @@ def save_to_excel(xdata,ydata,zdata):
         j = j + 1
 
     wb.save(wb_name)
+    print("LOG: Saved trajectory data in {}" .format(wb_name))

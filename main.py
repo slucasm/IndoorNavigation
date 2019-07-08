@@ -3,15 +3,13 @@ from ConnectionDroneFunctions import *
 import numpy as np
 import transformations as tf
 from dronekit import *
-import datetime
-import openpyxl as xlsx
 
 pipeline_T265 = init_T265()
 pipeline_D435 = init_D435()
 
 vehicle = None
 
-while vehicle==None:
+while vehicle is None:
     vehicle = droneConnection()
 
 xdata = []
@@ -19,7 +17,6 @@ ydata = []
 zdata = []
 
 try:
-
     while True:
         frames_T265 = pipeline_T265.wait_for_frames()
         frames_D435 = pipeline_D435.wait_for_frames()
@@ -29,7 +26,7 @@ try:
 
         pose_data = pose_frame.get_pose_data()
 
-        matrix_quaternion = tf.quaternion_matrix([pose_data.rotation.w,-pose_data.rotation.z,pose_data.rotation.x,-pose_data.rotation.y])
+        matrix_quaternion = tf.quaternion_matrix([pose_data.rotation.w, -pose_data.rotation.z, pose_data.rotation.x, -pose_data.rotation.y])
 
         TaitBryan_rad = np.array(tf.euler_from_matrix(matrix_quaternion, 'sxyz'))
 
@@ -49,13 +46,20 @@ try:
         ydata.append(y)
         zdata.append(z)
 
-
         time.sleep(1.0 / 30)
+
 finally:
 
     pipeline_T265.stop()
+    print("LOG: T265 - Save video record as {}_T265.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S")))
+
     pipeline_D435.stop()
+    print("LOG: D435 - Save video record as {}_D435.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S")))
+
     vehicle.close()
+    print("LOG: Connections closed")
+
+
 
     save_to_excel(xdata, ydata, zdata)
 
