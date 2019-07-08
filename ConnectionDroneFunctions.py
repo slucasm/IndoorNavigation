@@ -4,16 +4,18 @@ from dronekit import connect
 
 
 def droneConnection():
-    connection_string = "COM7"
-    connection_baudrate = 921600
+    connection_string = "COM4"
+    connection_baudrate = 57600
+    print("Connecting to Drone")
+    vehicle = None
 
     try:
-        vehicle = connect(connection_string, wait_ready=True, baud=connection_baudrate)
+        vehicle = connect(connection_string, wait_ready=False, baud=connection_baudrate)
         print("Connected to Drone")
         return vehicle
-    except:
-        print("Error connecting Drone")
 
+    except:
+        return vehicle
 
 
 def message_vision_position_estimate(vehicle, time, x, y, z, roll, pitch, yaw):

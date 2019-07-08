@@ -1,5 +1,7 @@
 import pyrealsense2 as rs
 import numpy as np
+import datetime
+import openpyxl as xlsx
 
 def init_T265():
     pipeline_T265 = rs.pipeline()
@@ -42,3 +44,27 @@ def get_distance_pixels_inside_region(frames_D435, minimum_distance, x_up, y_up,
     mean_distance = bins[index]
 
     return mean_distance
+
+
+def save_to_excel(xdata,ydata,zdata):
+    wb_name = "{}.xlsx".format(datetime.datetime.now().strftime("%Y%m%d"))
+    worksheet_name = str(datetime.datetime.now().strftime("%H%M%S"))
+    wb = None
+    try:
+        wb = xlsx.load_workbook(wb_name)
+    except:
+        print("Create new .xlsx file")
+
+    if wb is None:
+        wb = xlsx.Workbook()
+
+    worksheet = wb.create_sheet(worksheet_name)
+
+    j = 1
+    while j <= len(xdata):
+        worksheet.cell(row=j, column=1).value = xdata[j-1]
+        worksheet.cell(row=j, column=2).value = ydata[j-1]
+        worksheet.cell(row=j, column=3).value = zdata[j-1]
+        j = j + 1
+
+    wb.save(wb_name)

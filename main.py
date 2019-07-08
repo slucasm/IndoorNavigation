@@ -3,15 +3,17 @@ from ConnectionDroneFunctions import *
 import numpy as np
 import transformations as tf
 from dronekit import *
-import xlsxwriter as xlsx
+import datetime
+import openpyxl as xlsx
 
 pipeline_T265 = init_T265()
 pipeline_D435 = init_D435()
 
-vehicle = droneConnection()
+vehicle = None
 
-wb = xlsx.Workbook('Trajectory.xlsx')
-worksheet = wb.add_worksheet()
+while vehicle==None:
+    vehicle = droneConnection()
+
 xdata = []
 ydata = []
 zdata = []
@@ -55,14 +57,7 @@ finally:
     pipeline_D435.stop()
     vehicle.close()
 
-    trajectory = [xdata,ydata,zdata]
-    row = 0
-
-    for col, data in enumerate(trajectory):
-        worksheet.write_column(row, col, data)
-
-    wb.close()
-
+    save_to_excel(xdata, ydata, zdata)
 
 
 
