@@ -8,6 +8,9 @@ def init_T265():
     config_T265 = rs.config()
     config_T265.enable_device('905312110153')
     config_T265.enable_stream(rs.stream.pose)
+    config_T265.enable_stream(rs.stream.fisheye, 1)
+    config_T265.enable_stream(rs.stream.fisheye, 2)
+    config_T265.enable_record_to_file("{}_T265.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S")))
     pipeline_T265.start(config_T265)
     return pipeline_T265
 
@@ -16,6 +19,8 @@ def init_D435():
     config_D435 = rs.config()
     config_D435.enable_device('829212070982')
     config_D435.enable_stream(rs.stream.depth, 848, 480, rs.format.z16, 30)
+    config_D435.enable_stream(rs.stream.color, 1280, 720, rs.format.rgb8, 15)
+    config_D435.enable_record_to_file("{}_D435.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S")))
     pipeline_D435.start(config_D435)
     return pipeline_D435
 
