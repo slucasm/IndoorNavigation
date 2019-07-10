@@ -16,8 +16,8 @@ from dronekit import connect
 
 # Establish connection with flight controller
 def droneConnection():
-    connection_string = "COM4"  # Select direction where is the flight controller (we connect with it accross UART ports)
-    connection_baudrate = 57600  # Select connection baud rate
+    connection_string = '/dev/serial0'  # Select direction where is the flight controller (we connect with it accross UART ports)
+    connection_baudrate = 921600  # Select connection baud rate
     print("LOG: Connecting with Drone...")
     vehicle = None
 

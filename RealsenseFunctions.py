@@ -14,7 +14,8 @@ File description: includes functions where cameras Intel RealSense are involved
 import pyrealsense2 as rs
 import numpy as np
 import datetime
-import openpyxl as xlsx
+from openpyxl import *
+
 
 # Configure T265 camera to stream pose data and vision from fisheye, start recording and establish connection.
 def init_T265():
@@ -22,12 +23,12 @@ def init_T265():
     config_T265 = rs.config()
     config_T265.enable_device('905312110153') # Detect T265 camera by device serial
     config_T265.enable_stream(rs.stream.pose)
-    config_T265.enable_stream(rs.stream.fisheye, 1)
-    config_T265.enable_stream(rs.stream.fisheye, 2)
-    config_T265.enable_record_to_file("{}_T265.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))) # Start record
+#    config_T265.enable_stream(rs.stream.fisheye, 1)
+#    config_T265.enable_stream(rs.stream.fisheye, 2)
+#    config_T265.enable_record_to_file("bagFiles/{}_T265.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))) # Start record
     pipeline_T265.start(config_T265)
     print("LOG: T265 - Connected with camera")
-    print ("LOG: T265 - Start recording")
+#    print ("LOG: T265 - Start recording")
     return pipeline_T265
 
 # Configure D435 camera to stream depth and color, start recording and establish connection
@@ -35,12 +36,12 @@ def init_D435():
     pipeline_D435 = rs.pipeline()
     config_D435 = rs.config()
     config_D435.enable_device('829212070982') # Detect D435 camera by device serial
-    config_D435.enable_stream(rs.stream.depth, 848, 480, rs.format.z16, 30)
-    config_D435.enable_stream(rs.stream.color, 1280, 720, rs.format.rgb8, 15)
-    config_D435.enable_record_to_file("{}_D435.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))) # Start record
+    config_D435.enable_stream(rs.stream.depth)
+    config_D435.enable_stream(rs.stream.color)
+#    config_D435.enable_record_to_file("bagFiles/{}_D435.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))) # Start record
     pipeline_D435.start(config_D435)
     print("LOG: D435 - Connected with camera")
-    print("LOG: D435 - Start recording")
+#    print("LOG: D435 - Start recording")
     return pipeline_D435
 
 # Counts number of pixels with distance below than minimum distance (security distance) and then it calculates if is an obstacle or not
@@ -83,13 +84,13 @@ def save_to_excel(xdata,ydata,zdata):
     wb = None
     # First tries to find if there is a file created for the day. If exists, use this file. Else create a new file.
     try:
-        wb = xlsx.load_workbook(wb_name)
+        wb = load_workbook("xlsxFiles/"+wb_name)
         print("LOG: Created new worksheet in {}" .format(wb_name))
     except:
         print("LOG: Create new .xlsx file")
 
     if wb is None:
-        wb = xlsx.Workbook()
+        wb = Workbook()
 
     worksheet = wb.create_sheet(worksheet_name) # Add worksheet to excel file
 
@@ -101,5 +102,5 @@ def save_to_excel(xdata,ydata,zdata):
         worksheet.cell(row=j, column=3).value = zdata[j-1]
         j = j + 1
 
-    wb.save(wb_name) # Save the file
+    wb.save("xlsxFiles/"+wb_name) # Save the file
     print("LOG: Saved trajectory data in {}" .format(wb_name))
