@@ -27,6 +27,9 @@ while vehicle is None:
     # Start connection with flight controller
     vehicle = droneConnection()
 
+message_set_gps_global_origin_position(vehicle)
+message_set_home_position(vehicle)
+
 xdata = []
 ydata = []
 zdata = []

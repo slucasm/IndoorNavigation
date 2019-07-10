@@ -45,3 +45,20 @@ def message_distance_sensor(vehicle, time, min_distance, max_distance, current_d
     vehicle.send_mavlink(message)
     vehicle.flush()
 
+def message_set_home_position(vehicle):
+
+    lat = 412751720
+    lon = 19845350
+
+    message = vehicle.message_factory.set_home_position_encode(int(vehicle._master.source_system),lat,lon, 0, 0, 0, 0, [1, 0, 0, 0], 0, 0, 1)
+    vehicle.send_mavlink(message)
+    vehicle.flush()
+
+def message_set_gps_global_origin_position(vehicle):
+
+    lat = 412751720
+    lon = 19845350
+
+    message = vehicle.message_factory.set_gps_global_position_origin_encode(int(vehicle._master.source_system), lat, lon, 0)
+    vehicle.send_mavlink(message)
+    vehicle.flush()
