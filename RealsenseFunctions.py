@@ -23,12 +23,12 @@ def init_T265():
     config_T265 = rs.config()
     config_T265.enable_device('905312110153') # Detect T265 camera by device serial
     config_T265.enable_stream(rs.stream.pose)
-#    config_T265.enable_stream(rs.stream.fisheye, 1)
-#    config_T265.enable_stream(rs.stream.fisheye, 2)
-#    config_T265.enable_record_to_file("bagFiles/{}_T265.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))) # Start record
+    config_T265.enable_stream(rs.stream.fisheye, 1)
+    config_T265.enable_stream(rs.stream.fisheye, 2)
+    config_T265.enable_record_to_file("bagFiles/{}_T265.bag".format(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))) # Start record
     pipeline_T265.start(config_T265)
     print("LOG: T265 - Connected with camera")
-#    print ("LOG: T265 - Start recording")
+    print ("LOG: T265 - Start recording")
     return pipeline_T265
 
 # Configure D435 camera to stream depth and color, start recording and establish connection
@@ -78,7 +78,7 @@ def get_distance_pixels_inside_region(frames_D435, minimum_distance, x_up, y_up,
 
 # Save trajectory data to excel file. One file for day, and one worksheet per flight in day. (In one day it only creates
 # one file but it can create many worksheets as flights in the day).
-def save_to_excel(xdata,ydata,zdata):
+def save_to_excel(xdata,ydata,zdata, time):
     wb_name = "{}.xlsx".format(datetime.datetime.now().strftime("%Y%m%d")) # The file name is the day in format YYYYMMDD
     worksheet_name = str(datetime.datetime.now().strftime("%H%M%S")) # The worksheet name is the time in format hhmmss
     wb = None
@@ -94,12 +94,17 @@ def save_to_excel(xdata,ydata,zdata):
 
     worksheet = wb.create_sheet(worksheet_name) # Add worksheet to excel file
 
-    j = 1
+    worksheet.cell(row=1, column=1).value = "x data"
+    worksheet.cell(row=1, column=2).value = "y data"
+    worksheet.cell(row=1, column=3).value = "z data"
+    worksheet.cell(row=1, column=4).value = "time"
+    j = 2
     # Write trajectory data on the file
     while j <= len(xdata):
         worksheet.cell(row=j, column=1).value = xdata[j-1]
         worksheet.cell(row=j, column=2).value = ydata[j-1]
         worksheet.cell(row=j, column=3).value = zdata[j-1]
+        worksheet.cell(row=j, column=4).value = time[j-1]
         j = j + 1
 
     wb.save("xlsxFiles/"+wb_name) # Save the file
